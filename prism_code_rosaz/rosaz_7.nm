@@ -1,0 +1,53 @@
+// Author: Lakhan Kamireddy
+// self stabilisation algorithm Rosaz
+// gxn/dxp 07/08/18
+
+mdp
+
+// module of process 1
+module process1
+	
+	d1 : bool; // probabilistic variable -- s token
+	p1 : bool; // deterministic variable -- p token
+	cd1 : [0..2]; // color of s token - '0' for green (fast), '1' for orange (medium), '2' for red (slow)
+	cp1 : [0..2]; // color of p token - '0' for green (fast), '1' for orange (medium), '2' for red (slow)
+	
+	// and if ptok is red
+	[] d1=d7 & p1=p7 & cp1=2 -> 0.5 : (d1'=!d1) & (p1'=!p1) + 0.5 : (d1'=!d1) & (p1'=p1);
+	// and if ptok is orange
+	[] d1=d7 & p1=p7 & cp1=1 -> 0.75 : (d1'=!d1) & (p1'=!p1) + 0.25 : (d1'=!d1) & (p1'=p1);
+	// and if ptok is green
+	[] d1=d7 & p1=p7 & cp1=0 -> 0.875 : (d1'=!d1) & (p1'=!p1) + 0.125 : (d1'=!d1) & (p1'=p1);
+	// else process forwards stok
+	[] d1=d7 & !p1=p7 -> (d1'=!d1);
+	// process had ptoken and ptok same color as stok, then process changes color
+        [] p1=p7 & cp1=cd1 & cp1=0 -> (cp1'=1);
+        [] p1=p7 & cp1=cd1 & cp1=1 -> (cp1'=2);
+        [] p1=p7 & cp1=cd1 & cp1=2 -> (cp1'=0);
+
+	
+endmodule
+
+// add further processes through renaming
+module process2 = process1 [ p1=p2, p7=p1, d1=d2, d7=d1, cd1=cd2, cp1=cp2 ] endmodule
+module process3 = process1 [ p1=p3, p7=p2, d1=d3, d7=d2, cd1=cd3, cp1=cp3 ] endmodule
+module process4 = process1 [ p1=p4, p7=p3, d1=d4, d7=d3, cd1=cd4, cp1=cp4 ] endmodule
+module process5 = process1 [ p1=p5, p7=p4, d1=d5, d7=d4, cd1=cd5, cp1=cp5 ] endmodule
+module process6 = process1 [ p1=p6, p7=p5, d1=d6, d7=d5, cd1=cd6, cp1=cp6 ] endmodule
+module process7 = process1 [ p1=p7, p7=p6, d1=d7, d7=d6, cd1=cd7, cp1=cp7 ] endmodule
+
+// cost - 1 in each state (expected steps)
+rewards "steps"
+	true : 1;
+endrewards
+
+// initial states - any state with more than 1 token, that is all states
+init
+	true
+endinit
+
+// formula, for use in properties: number of tokens
+formula num_tokens = (p1=p2?1:0)+(p2=p3?1:0)+(p3=p4?1:0)+(p4=p5?1:0)+(p5=p6?1:0)+(p6=p7?1:0)+(p7=p1?1:0);
+
+// label - stable configurations (1 token)
+label "stable" = num_tokens=1;
