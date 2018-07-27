@@ -1,6 +1,16 @@
-// Author: Lakhan Kamireddy
-// self stabilisation algorithm Rosaz
-// gxn/dxp 07/08/18
+/*
+ * Self stabilisation algorithm Rosaz
+ * Copyright (C) 2018 Lakhan Kamireddy, <lakhanshiva@gmail.com>
+ *
+ * This software is distributed with NO WARRANTIES, not even the implied
+ * warranties for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ * Authors grant any other persons or organisations a permission to use,
+ * modify and redistribute this software in source and binary forms,
+ * as long as this message is kept with the software, all derivative
+ * works or modified versions.
+ * gxn/dxp 07/08/18
+ */
 
 mdp
 
